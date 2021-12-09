@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 
 	"github.com/cosmos/cosmos-sdk/server"
@@ -12,6 +14,13 @@ import (
 )
 
 func main() {
+	// The HTTP callable pprof hook as per https://pkg.go.dev/net/http/pprof.
+	go func() {
+		if err := http.ListenAndServe(":6060", nil); err != nil {
+			panic(err)
+		}
+	}()
+
 	setupConfig()
 	cmdcfg.RegisterDenoms()
 
